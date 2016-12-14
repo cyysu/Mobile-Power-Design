@@ -1,0 +1,72 @@
+
+function Sidebar(Dfix,Dend) {
+	var fix = $(Dfix);						//滚动悬浮块
+	var end = $(Dend);						//滚动到这个元素后结束固定
+	var fixTop = fix.offset().top,			//滚动悬浮块与顶部的距离
+		fixHeight = fix.height();			//滚动悬浮块高度
+	var endTop, miss;						//结束元素与顶部的距离
+	$(window).scroll(function() {
+		//页面与顶部高度
+		var docTop = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+		//如果有结束块
+		if (end.length > 0) {
+			endTop = end.offset().top - 0;
+			miss = endTop - docTop - fixHeight;
+		}
+		if (fixTop < docTop) {
+			fix.css({'position': 'fixed'});
+			if ((end.length > 0) && (endTop < (docTop + fixHeight))) {
+				fix.css({top: miss});		//滚动悬浮块滑到结束块上时，top值为负，即慢慢隐藏出浏览器
+			} else{
+				fix.css({top: 0});			//滚动悬浮块未到结束块上时，top为0
+			}
+		} else {
+			fix.css({'position': 'static'});
+		}
+	})
+};
+
+$(document).ready(function(){
+	var Purl = 'http://www.weizhanle.com/json.php';
+	$('.warlist').before('<ul class="warpic listcnxh" style="height:280px;"></ul>');
+	$.getJSON(Purl,function(data){
+		$.each(data.list, function(i,item) {
+			$('.warpic').prepend(
+			'<li>'+
+			'<a class="pic" href="'+item.url+'" target="_blank"><img src="'+item.pic+'" style="display: inline;"></a>'+
+			'<a class="title" href="'+item.url+'" target="_blank"><span>'+item.title+'</span></a>'+
+			'<div class="bg"></div>'+
+			'</li>'
+			);
+		});
+	});
+});
+
+function preview() 
+{ 
+bdhtml=window.document.body.innerHTML; 
+sprnstr="<!--startprint-->"; 
+eprnstr="<!--endprint-->"; 
+prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17); 
+prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr)); 
+window.document.body.innerHTML=prnhtml; 
+window.print(); 
+}
+
+function wddown(pagenum,wdid)
+{
+	window.location='download.php?pagenum='+pagenum+'&wdid='+wdid;
+}
+
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
